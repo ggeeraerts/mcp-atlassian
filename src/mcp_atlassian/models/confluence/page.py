@@ -196,9 +196,11 @@ class ConfluencePage(ApiModel, TimestampMixin):
             created = history.get("createdDate", EMPTY_STRING)
             updated = history.get("lastUpdated", {}).get("when", EMPTY_STRING)
 
-            # Fall back to version date if no history is available
-            if not updated and version and version.when:
-                updated = version.when
+        # Prefer the timestamp of the specific version represented by this
+        # response. For the current page this matches history.lastUpdated.when;
+        # for a historical version it is that version's own timestamp.
+        if version and version.when:
+            updated = version.when
 
         # Construct URL if base_url is provided
         url = None
